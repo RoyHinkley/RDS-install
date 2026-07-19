@@ -1,0 +1,28 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <Title>Remote Desktop Support Installer</Title>
+    <Company>My PJs</Company>
+    <Authors>Jim Wilson</Authors>
+    <Copyright>$(Company), 2026</Copyright>
+    <AssemblyName>RDS-install</AssemblyName>
+    <RepositoryUrl>https://github.com/RoyHinkley/RDS-install</RepositoryUrl>
+    <TargetFramework>net9.0</TargetFramework>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <OutputType>Exe</OutputType>
+    <OutputPath>bin\$(Configuration)\</OutputPath>
+	<PublishDir>bin\$(Configuration)\publish\</PublishDir>
+    <PublishSingleFile>true</PublishSingleFile>
+    <SelfContained>true</SelfContained>
+    <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
+	<ApplicationManifest>app.manifest</ApplicationManifest>
+	<ApplicationIcon>install.ico</ApplicationIcon>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+	<NoWarn>$(NoWarn);CA1416</NoWarn>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Remove="Program.Secrets.Template.cs" />
+    <None Include="Program.Secrets.Template.cs" />
+  </ItemGroup>
+</Project>
