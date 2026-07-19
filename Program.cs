@@ -4,7 +4,7 @@
 // RDS-install.config file beside this executable may override individual values.
 //
 // Build a self-contained version with:
-//     dotnet publish -c Release
+//     dotnet publish
 
 using Microsoft.Win32;
 using System.Collections.Generic;

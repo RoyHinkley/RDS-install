@@ -407,3 +407,4 @@ FodyWeavers.xsd
 *.msp
 
 Program.Secrets.cs 
+[Pp]ublish/

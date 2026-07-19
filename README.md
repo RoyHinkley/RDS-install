@@ -1,23 +1,39 @@
 # RDS-install
 
-This tool installs and configures [NetBird](https://netbird.io) and [RustDesk](https://rustdesk.com) to enable My PJs **secure, remote desktop access** to subscribers. It is intended for those who need remote support or remote access capabilities.
+This tool installs and configures [NetBird](https://netbird.io) and [RustDesk](https://rustdesk.com) on a Windows computer so that the computer can join a Remote Desktop Support (RDS) service. The installer can be customized for any RDS provider by supplying the appropriate configuration values before building the program.
+
+The RDS platform is a secure, private, open-source, self-hosted remote-support system built around NetBird and RustDesk. The NetBird component provides an overlay Virtual Private Network, which encrypts all internal traffic. RustDesk runs within the VPN, allowing users to securely access and control other computers on the network according to defined roles: Support Clients, Helpers, and Guests.
+
+"Self-hosted" means that anyone with an internet connection can deploy an RDS server and operate a private Remote Support service under their own control.
+
+For more information:
+- [Remote Desktop Support Service](https://wiki.mypjs.us/index.php?title=Remote_Desktop_Support_Service) - Using RDS-install on a client computer
+- [Remote Desktop Support Platform](https://wiki.mypjs.us/index.php?title=Self-hosted_Remote_Desktop_Support_Platform) - Building and administering an RDS server to host your own private support service
 
 ## ✨ Features
 
-- 👨‍💻 Installs and configures NetBird VPN
-- 🖥 Installs and preconfigures RustDesk remote desktop
-- 🔐 Communicates securely with My PJs' internal services
-- 🧹 Supports two roles:
-  - **Subscribers** (for systems serviced by My PJs)
-  - **Guests** (for users who want remote access to their own hosts)
+- 👨‍💻 Installs, configures, and registers a Windows computer with an RDS service in a single operation
+- 🖥 Supports Subscriber and Guest roles
+
+## Installation and Service Roles
+
+- Subscribers are the primary Support Clients. These are computers intended to be remotely accessed and controlled by RDS service Helpers and Guests.
+- Helpers are RDS staff authorized to service (work on) any Support Client.
+- Guests are RDS members with limited access to specific Support Clients for which they know the RustDesk ID and password. These are typically computers belonging to users who also administer one or more Support Clients.
+
 
 ## 🔧 Building the Installer
 
-This is a .NET console app. Before building, you must supply your own configuration keys.
+### 1. Requirements
 
-### 1. Provide Secrets
+RDS-install is a .NET console application. Building it requires one of the following:
+- [Microsoft .NET SDK 9.0 or later](https://dotnet.microsoft.com)
+or
+- [Microsoft Visual Studio](https://visualstudio.microsoft.com) with the C#/.NET desktop development workload installed, supporting .NET 9.0 or later
 
-Before building, use the provided template:
+### 2. Provide Secrets
+
+Before building, you must supply provider-specific configuration values. Copy the provided template:
 
 ```
 Program.Secrets.Template.cs
@@ -30,34 +46,38 @@ Program.Secrets.cs
 ```
 
 Fill in the required values:
+- `ProviderName`  - The name of the service provider (e.g., My PJs)
+- `ServiceName` - Remote Desktop Support (e.g)
+- `PublicServerUrl` - Public URL used to reach the RDS NetBird VPN. (e.g., https://support.example.com)
+- `VpnServerUrl` - VPN URL used to reach RustDesk and Valet (e.g., http://support.example.vpn)
+- `NetBirdGuestKey` - <guest-setup-key>
+- `NetBirdSubscriberKey` - <subscriber-setup-key>
+- `RustDeskKey` - <rustdesk-public-key>
+- `RustDeskPort` - 21116
 
-- `NetBirdGuestKey` – setup key for Guests (Guests can remote into any RDS subscriber whose RustDesk ID and password they know.)
-- `NetBirdSubscriberKey` – setup key for RDS subscribers (My PJs support staff ("Helpers") can remote into RDS subscribers.)
-- `MgmtUrl` – NetBird service URL (support.mypjs.us)
-- `RustDeskKey` – RustDesk server public key
-- `ValetUrl` – My PJs internal service (support.mypjs.vpn)
+The NetBird setup keys and RustDesk public key are obtained during RDS server setup.
 
 **🚫 Do not commit `Program.Secrets.cs` — it is excluded by `.gitignore`.**
 
-### 2. Build a self-contained release
+### 3. Build
 
 ```bash
-dotnet publish -c Release -r win-x64 --self-contained true /p:PublishSingleFile=true
+dotnet publish
 ```
 
-The resulting `RDS-install.exe` is a single-file executable suitable for distribution.
+The resulting `RDS-install.exe` is placed in the project's Publish folder.
 
 ---
 
 ## 🖥 Usage
 
-To install the My PJs RDS:
+To install RDS as a Subscriber, open an elevated Command Prompt (Run as Administrator) and issue this command:
 
 ```bash
 RDS-install.exe
 ```
 
-To install as a **guest** (for users who need to remote into another RDS computer):
+To install as a Guest, use:
 
 ```bash
 RDS-install.exe --guest
@@ -73,14 +93,11 @@ RDS-install.exe --help
 
 ## 🔐 Security Considerations
 
-This installer embeds live secrets (e.g., NetBird setup keys, RustDesk server key) in order to simplify deployment. These secrets allow systems to register with My PJs' RDS but do not expose administrative privileges or backend access.
+By default, the installer embeds live secrets into the binary in order to simplify deployment. These secrets allow the client to join the provider's RDS server, but they do not expose administrative privileges or backend access.
 
-- For **maximum security**, all secrets can be supplied via command-line arguments at runtime.
-- In practice, we accept the minimal risk of embedding keys in the installer and monitor usage accordingly.
-- The `ValetUrl` is only accessible over VPN, and other embedded keys are scoped to their purpose.
-- If needed, you can rotate any exposed key using the NetBird or RustDesk management interfaces.
+- For **maximum security**, all required data may be instead supplied by a local configuration file. To enable this alternative, the provider must provide the config file to the client via other means.
 
-While the consequences of exposure are limited, users are encouraged to understand the implications of distributing preconfigured installers and to rotate keys if they suspect misuse.
+In practice, My PJs accepts the minimal risk of embedding the keys in the installer and monitors usage accordingly. While the consequences of exposure are limited, providers need to understand the implications of distributing a preconfigured installer and should rotate keys if they suspect misuse.
 
 ---
 
@@ -92,5 +109,4 @@ This project is licensed under the **GNU GPL v3**. See the [LICENSE](LICENSE) fi
 
 ## 🤝 Contributions
 
-This repository is maintained by [Jim Wilson of My PJs, LLC](https://github.com/RoyHinkley). Issues, feedback, and forks are welcome — please review your changes for security implications before publishing.
-
+RDS-install is part of the [My PJs, LLC](https://mypjs.us/) [Self-hosted Remote Desktop Support Platform](https://mypjs.us/selected-projects/) project. Project documentation is available on the [My PJs wiki](https://wiki.mypjs.us/index.php?title=Self-hosted_Remote_Desktop_Support_Platform). This repository is maintained by [Jim Wilson](https://github.com/RoyHinkley).
