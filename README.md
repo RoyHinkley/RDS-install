@@ -50,9 +50,9 @@ Fill in the required values:
 - `ServiceName` - Remote Desktop Support (e.g)
 - `PublicServerUrl` - Public URL used to reach the RDS NetBird VPN. (e.g., https://support.example.com)
 - `VpnServerUrl` - VPN URL used to reach RustDesk and Valet (e.g., http://support.example.vpn)
-- `NetBirdGuestKey` - Setup key for automatically joining Guests group
-- `NetBirdSubscriberKey` - Setup key for automatically joining Support Clients group
-- `RustDeskKey` - RustDesk public key required for connecting to RustDesk.
+- `NetBirdGuestKey` - Setup key for automatically joining the Guests group
+- `NetBirdSubscriberKey` - Setup key for automatically joining the Support Clients group
+- `RustDeskKey` - Public key required for connecting to RustDesk over the VPN.
 - `RustDeskPort` - 21116
 
 The NetBird setup keys and RustDesk public key are obtained during RDS server setup.
@@ -95,7 +95,7 @@ RDS-install.exe --help
 
 By default, the installer embeds live secrets into the binary in order to simplify deployment. These secrets allow the client to join the provider's RDS server, but they do not expose administrative privileges or backend access.
 
-- For **maximum security**, all required data may be instead supplied by a local configuration file. To enable this alternative, the provider must provide the config file to the client via other means.
+- For **maximum security**, all required data may be instead supplied by a local configuration file. To enable this alternative, the provider must provide the config file to the client via private means.
 
 In practice, My PJs accepts the minimal risk of embedding the keys in the installer and monitors usage accordingly. While the consequences of exposure are limited, providers need to understand the implications of distributing a preconfigured installer and should rotate keys if they suspect misuse.
 
