@@ -50,9 +50,9 @@ Fill in the required values:
 - `ServiceName` - Remote Desktop Support (e.g)
 - `PublicServerUrl` - Public URL used to reach the RDS NetBird VPN. (e.g., https://support.example.com)
 - `VpnServerUrl` - VPN URL used to reach RustDesk and Valet (e.g., http://support.example.vpn)
-- `NetBirdGuestKey` - <guest-setup-key>
-- `NetBirdSubscriberKey` - <subscriber-setup-key>
-- `RustDeskKey` - <rustdesk-public-key>
+- `NetBirdGuestKey` - Setup key for automatically joining Guests group
+- `NetBirdSubscriberKey` - Setup key for automatically joining Support Clients group
+- `RustDeskKey` - RustDesk public key required for connecting to RustDesk.
 - `RustDeskPort` - 21116
 
 The NetBird setup keys and RustDesk public key are obtained during RDS server setup.
